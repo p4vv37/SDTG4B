@@ -13,6 +13,7 @@ from bpy.types import Operator
 
 class SDProcessor(threading.Thread):
     waiting_for_render = False
+    waiting_for_refresh = False
     camera_location = (0, 0, 0)
     stop = False
 
@@ -100,6 +101,7 @@ class SDProcessor(threading.Thread):
 
         self.wm.progress_update(100)
         self.wm.progress_end()
+        self.waiting_for_refresh = True
 
 
 def create_material(txt_path):
@@ -370,9 +372,15 @@ class WM_OT_GenerateTxt(Operator):
                 bpy.ops.render.render()
                 self.t.waiting_for_render = False
                 self.progress = 0.0
+            if self.t.waiting_for_refresh:
+                for img in bpy.data.images:
+                    img.reload()
+                self.t.waiting_for_refresh = False
             return {'PASS_THROUGH'}
         print("END")
         time.sleep(1)
+        for img in bpy.data.images:
+            img.reload()
         return {'FINISHED'}
 
     def cancel(self, context):
