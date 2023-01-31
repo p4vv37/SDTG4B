@@ -199,7 +199,7 @@ class WM_OT_GenerateTxt(Operator):
     tmp_path = pathlib.Path()
     result_path = pathlib.Path()
     txt_path = pathlib.Path()
-    wm = none
+    wm = None
     t = None
     progress = 0.0
     _timer = None
