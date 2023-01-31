@@ -128,8 +128,8 @@ class SDProperties(PropertyGroup):
     )
 
     target: PointerProperty(
-        name="Server port",
-        description="Port of stable diffusion server",
+        name="Target object",
+        description="Object that will be used for the texture generation",
         type=bpy.types.Object
     )
 
