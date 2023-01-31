@@ -1,0 +1,15 @@
+name: SDTG4B_CONDA
+channels:
+  - conda-forge
+  - nvidia
+  - pytorch
+dependencies:
+  - python=3.10
+  - pytorch-cuda=11.7
+  - diffusers
+  - transformers
+  - pillow
+  - accelerate
+  - numpy
+  - opencv
+
