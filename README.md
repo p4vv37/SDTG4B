@@ -7,6 +7,7 @@ https://user-images.githubusercontent.com/3722204/214519268-2d9e45e6-711e-45fd-b
 
 https://user-images.githubusercontent.com/3722204/213944732-2a86cb32-83b0-43c3-b83b-8fa765138b24.mp4
 
+https://user-images.githubusercontent.com/3722204/215635067-d8b07c4f-06b8-4388-8777-6bb3262934c2.mp4
 
 # How to install
 - Download and install the zip file of the current release from: https://github.com/p4vv37/SDTG4B/releases/tag/release
