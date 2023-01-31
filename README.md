@@ -1,7 +1,7 @@
 # SDTG4B
 Stable Diffusion Texture Generator For Blender
 
-![obraz](https://user-images.githubusercontent.com/3722204/215626232-3c5ae6e2-8f06-4ae8-a03c-a0b400254873.png)
+![obraz](https://user-images.githubusercontent.com/3722204/215628215-339e9609-86ac-40f7-8478-77077ffeec4e.png)
 
 https://user-images.githubusercontent.com/3722204/214519268-2d9e45e6-711e-45fd-b461-fff06c17f1d1.mp4
 
@@ -20,6 +20,8 @@ https://user-images.githubusercontent.com/3722204/213944732-2a86cb32-83b0-43c3-b
 # How to generate texture
  
 - Run the [start_sd_server.py](https://github.com/p4vv37/SDTG4B/blob/main/start_sd_server.py) file in conda environment with required packages or use the SD server settings > Run SD server button from plugin UI.
+
+- The plugin UI should be visible in the 3D Viewport during object mode 
 
 - Set a value for the Target object. **Target object need to have correct UVs**
 
