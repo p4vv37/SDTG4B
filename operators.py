@@ -25,7 +25,6 @@ class SDProcessor(threading.Thread):
         self.resolution_y = resolution_y
         self.camera_r = camera_r
         self.camera_z = camera_z
-        self.wm = wm
         self.views_num = views_num
         self.camera = camera
         self.iteration = 0
@@ -81,7 +80,7 @@ class SDProcessor(threading.Thread):
             if self.stop:
                 return
             self.depth2img()
-            self.wm.progress_update(70 * num // number_of_renders)
+            bpy.context.window_manager.progress_update(70 * num // number_of_renders)
             if self.stop:
                 return
         # top part problem
@@ -89,18 +88,18 @@ class SDProcessor(threading.Thread):
         if self.stop:
             return
         self.depth2img(strength=0.5)
-        self.wm.progress_update(80)
+        bpy.context.window_manager.progress_update(80)
 
         self.render_view(0)
         if self.stop:
             return
         self.depth2img(strength=0.5)
-        self.wm.progress_update(90)
+        bpy.context.window_manager.progress_update(90)
 
         self.finish_texture()
 
-        self.wm.progress_update(100)
-        self.wm.progress_end()
+        bpy.context.window_manager.progress_update(100)
+        bpy.context.window_manager.progress_end()
         self.waiting_for_refresh = True
 
 
@@ -234,7 +233,7 @@ class WM_OT_GenerateTxt(Operator):
             if node.label == "Output":
                 node.base_path = str(pathlib.Path(self.result_path))
 
-        self.wm.progress_update(33)
+        bpy.context.window_manager.progress_update(33)
 
         # Create/use material
         if self.sd_tool.clear_txt and os.path.exists(self.txt_path):
@@ -281,7 +280,7 @@ class WM_OT_GenerateTxt(Operator):
         tree.links.new(render_layers.outputs['Depth'], normalize_node.inputs[0])
         tree.links.new(normalize_node.outputs['Value'], depth_file_output.inputs[0])
 
-        self.wm.progress_update(70)
+        bpy.context.window_manager.progress_update(70)
 
         # uv
         uv_file_output = tree.nodes.new(type="CompositorNodeOutputFile")
@@ -293,7 +292,7 @@ class WM_OT_GenerateTxt(Operator):
         uv_file_output.format.color_depth = '32'
         tree.links.new(render_layers.outputs['UV'], uv_file_output.inputs[0])
 
-        self.wm.progress_update(80)
+        bpy.context.window_manager.progress_update(80)
 
         # alpha
         alpha_file_output = tree.nodes.new(type="CompositorNodeOutputFile")
@@ -305,7 +304,7 @@ class WM_OT_GenerateTxt(Operator):
         alpha_file_output.format.color_mode = "BW"
         tree.links.new(render_layers.outputs['Alpha'], alpha_file_output.inputs[0])
 
-        self.wm.progress_update(90)
+        bpy.context.window_manager.progress_update(90)
 
         # diffuse
         diffuse_file_output = tree.nodes.new(type="CompositorNodeOutputFile")
@@ -338,7 +337,7 @@ class WM_OT_GenerateTxt(Operator):
         image_file_output.format.file_format = "PNG"
         tree.links.new(render_layers.outputs['Image'], image_file_output.inputs[0])
 
-        self.wm.progress_update(99)
+        bpy.context.window_manager.progress_update(99)
 
     def modal(self, context, event):
         if event.type in {'ESC'}:
@@ -350,7 +349,7 @@ class WM_OT_GenerateTxt(Operator):
             max_value = 100 * (self.t.iteration / (self.t.views_num + 2))
             delta = max_value - min_value
             self.progress += 0.05 * (delta - self.progress)
-            self.wm.progress_update(min_value + + self.progress)
+            bpy.context.window_manager.progress_update(min_value + + self.progress)
 
         if self.t is not None and self.t.is_alive():
             if self.t.waiting_for_render:
@@ -393,7 +392,7 @@ class WM_OT_GenerateTxt(Operator):
         self.progress = 0.0
         scene = context.scene
         self.sd_tool = scene.sd_txt_tool
-        self.wm = bpy.context.window_manager
+        bpy.context.window_manager = bpy.context.window_manager
 
         for value_name in ("prompt", "target", "out_dir"):
             if not getattr(self.sd_tool, value_name):
@@ -433,12 +432,12 @@ Tf the server is running, make sure, that port and host of SD server are correct
         except requests.exceptions.ConnectTimeout:
             pass
 
-        self.wm.progress_begin(0, 100)
-        self.wm.progress_update(0)
+        bpy.context.window_manager.progress_begin(0, 100)
+        bpy.context.window_manager.progress_update(0)
 
         self.setup_composition_nodes_and_material()
 
-        self.wm.progress_update(0)
+        bpy.context.window_manager.progress_update(0)
 
         bpy.ops.object.camera_add(enter_editmode=False)
         camera = bpy.context.object
@@ -455,11 +454,11 @@ Tf the server is running, make sure, that port and host of SD server are correct
                              api_url=self.api_url,
                              resolution_x=self.sd_tool.resolution_x, resolution_y=self.sd_tool.resolution_y,
                              camera_r=self.sd_tool.camera_r, camera_z=self.sd_tool.camera_z,
-                             wm=self.wm,
+                             wm=bpy.context.window_manager,
                              views_num=self.sd_tool.views_num,
                              camera=camera)
 
         self.t.start()
-        self._timer = self.wm.event_timer_add(1, window=context.window)
+        self._timer = bpy.context.window_manager.event_timer_add(1, window=context.window)
         context.window_manager.modal_handler_add(self)
         return {'RUNNING_MODAL'}
