@@ -392,7 +392,6 @@ class WM_OT_GenerateTxt(Operator):
         self.progress = 0.0
         scene = context.scene
         self.sd_tool = scene.sd_txt_tool
-        bpy.context.window_manager = bpy.context.window_manager
 
         for value_name in ("prompt", "target", "out_dir"):
             if not getattr(self.sd_tool, value_name):
